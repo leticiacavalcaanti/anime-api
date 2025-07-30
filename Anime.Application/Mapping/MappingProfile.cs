@@ -4,9 +4,9 @@ using AnimeApp.Application.DTOs;
 
 namespace AnimeApp.Application.Mapping;
 
-public class AnimeProfile : Profile
+public class MappingProfile : Profile
 {
-    public AnimeProfile()
+    public MappingProfile()
     {
         CreateMap<Anime, AnimeDTO>().ReverseMap();
     }

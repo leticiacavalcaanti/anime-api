@@ -23,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Anime.Application\Anime.Application.csproj" />
-    <ProjectReference Include="..\Anime.Domain\Anime.Domain.csproj" />
-    <ProjectReference Include="..\Anime.Infra\Anime.Infra.csproj" />
+    <ProjectReference Include="..\Anime.Application\AnimeApp.Application.csproj" />
+    <ProjectReference Include="..\Anime.Domain\AnimeApp.Domain.csproj" />
+    <ProjectReference Include="..\Anime.Infra\AnimeApp.Infra.csproj" />
   </ItemGroup>
 
 </Project>
