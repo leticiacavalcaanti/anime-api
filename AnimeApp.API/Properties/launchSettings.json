@@ -1,0 +1,16 @@
+﻿{
+    "$schema": "https://json.schemastore.org/launchsettings.json",
+    "profiles": {
+        "AnimeApp.API": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "swagger",
+            "applicationUrl": "http://localhost:5282;https://localhost:7017",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}
+

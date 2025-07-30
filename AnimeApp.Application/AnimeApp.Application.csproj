@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Anime.Domain\AnimeApp.Domain.csproj" />
+    <ProjectReference Include="..\AnimeApp.Domain\AnimeApp.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
