@@ -5,13 +5,13 @@ using MediatR;
 
 namespace AnimeApp.Application.Queries;
 
-public record GetAnimeByFilterQuery(Guid? Id, string? Nome, string? Diretor) : IRequest<IEnumerable<AnimeDTO>>;
+public record GetAnimeByFilterQuery(Guid? Id, string? Nome, string? Diretor) : IRequest<IEnumerable<AnimeResponse>>;
 
-public class GetAnimeByFilterQueryHandler(IAnimeRepository repository, IMapper mapper) : IRequestHandler<GetAnimeByFilterQuery, IEnumerable<AnimeDTO>>
+public class GetAnimeByFilterQueryHandler(IAnimeRepository repository, IMapper mapper) : IRequestHandler<GetAnimeByFilterQuery, IEnumerable<AnimeResponse>>
 {
-    public async Task<IEnumerable<AnimeDTO>> Handle(GetAnimeByFilterQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<AnimeResponse>> Handle(GetAnimeByFilterQuery request, CancellationToken cancellationToken)
     {
         var result = await repository.GetByFilterAsync(request.Id, request.Nome, request.Diretor);
-        return mapper.Map<IEnumerable<AnimeDTO>>(result);
+        return mapper.Map<IEnumerable<AnimeResponse>>(result);
     }
 }

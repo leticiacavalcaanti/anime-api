@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace AnimeApp.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v2/[controller]")]
     public class AnimeController(IMediator mediator, ILogger<AnimeController> logger) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -56,7 +56,7 @@ namespace AnimeApp.API.Controllers
 
         // Criar novo anime
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AnimeRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateAnimeRequest request)
         {
             _logger.LogInformation("Iniciando criação de anime.");
             try
@@ -72,8 +72,8 @@ namespace AnimeApp.API.Controllers
         }
 
         // Atualizar anime
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] AnimeRequest request)
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAnimeRequest request)
         {
             _logger.LogInformation("Atualizando anime ID: {Id}", id);
             try

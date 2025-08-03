@@ -8,7 +8,8 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<AnimeRequest, Anime>().ReverseMap();
-        CreateMap<Anime, AnimeDTO>().ReverseMap();
+        CreateMap<CreateAnimeRequest, Anime>();
+        CreateMap<UpdateAnimeRequest, Anime>();
+        CreateMap<Anime, AnimeResponse>().ReverseMap();
     }
 }

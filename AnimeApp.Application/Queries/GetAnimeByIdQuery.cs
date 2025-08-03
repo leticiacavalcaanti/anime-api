@@ -6,13 +6,13 @@ using MediatR;
 
 namespace AnimeApp.Application.Queries;
 
-public record GetAnimeByIdQuery(Guid Id) : IRequest<AnimeDTO?>;
+public record GetAnimeByIdQuery(Guid Id) : IRequest<AnimeResponse?>;
 
-public class GetAnimeByIdQueryHandler(IAnimeRepository repository, IMapper mapper) : IRequestHandler<GetAnimeByIdQuery, AnimeDTO?>
+public class GetAnimeByIdQueryHandler(IAnimeRepository repository, IMapper mapper) : IRequestHandler<GetAnimeByIdQuery, AnimeResponse?>
 {
-    public async Task<AnimeDTO?> Handle(GetAnimeByIdQuery request, CancellationToken cancellationToken)
+    public async Task<AnimeResponse?> Handle(GetAnimeByIdQuery request, CancellationToken cancellationToken)
     {
         var anime = await repository.GetByIdAsync(request.Id);
-        return anime is null ? throw new AnimeNotFoundException(request.Id) : mapper.Map<AnimeDTO>(anime);
+        return anime is null ? throw new AnimeNotFoundException(request.Id) : mapper.Map<AnimeResponse>(anime);
     }
 }
