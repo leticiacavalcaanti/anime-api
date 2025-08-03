@@ -1,21 +1,18 @@
+using AnimeApp.API.Middlewares;
+using AnimeApp.Application.Commands;
+using AnimeApp.Application.Interfaces;
+using AnimeApp.Application.Mapping;
 using AnimeApp.Infra.Context;
 using AnimeApp.Infra.Repositories;
-using AnimeApp.Application.Interfaces;
-using AnimeApp.Application.Services;
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using AnimeApp.Application.Mapping;
-using Microsoft.Extensions.DependencyInjection;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-/* AddDbContext
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
-*/
-
+// Banco de Dados
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("Default"),
@@ -23,20 +20,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     )
 );
 
-// AutoMapper
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<MappingProfile>();
-});
-
-// Repositories (Infra)
+// Repositórios
 builder.Services.AddScoped<IAnimeRepository, AnimeRepository>();
 
-// Services (Application)
-builder.Services.AddScoped<IAnimeService, AnimeService>();
+// AutoMapper
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
-// Controllers
-builder.Services.AddControllers();
+// MediatR
+builder.Services.AddMediatR(typeof(CreateAnimeCommand).Assembly);
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -49,19 +40,42 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
+
+// Logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+// Controllers
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
-// Middleware
+// Middlewares
+
+// Swagger no ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "AnimeApp API v1");
-        options.RoutePrefix = "swagger"; // ou "" para servir diretamente na raiz
+        options.RoutePrefix = "swagger";
     });
 }
 
+// Middleware global de exceções
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

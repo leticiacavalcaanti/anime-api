@@ -1,47 +1,112 @@
-﻿using AnimeApp.Application.DTOs;
-using AnimeApp.Application.Interfaces;
+﻿using AnimeApp.Application.Commands;
+using AnimeApp.Application.DTOs;
+using AnimeApp.Application.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-namespace AnimeApp.API.Controllers;
-
-[ApiController]
-[Route("api/v1/[controller]")]
-public class AnimeController(IAnimeService animeService) : ControllerBase
+namespace AnimeApp.API.Controllers
 {
-    private readonly IAnimeService _animeService = animeService;
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string? nome, [FromQuery] string? diretor)
+    [ApiController]
+    [Route("api/v1/[controller]")]
+    public class AnimeController(IMediator mediator, ILogger<AnimeController> logger) : ControllerBase
     {
-        var result = await _animeService.GetByFilterAsync(nome, diretor);
-        return Ok(result);
-    }
+        private readonly IMediator _mediator = mediator;
+        private readonly ILogger<AnimeController> _logger = logger;
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var anime = await _animeService.GetByIdAsync(id);
-        return anime is null ? NotFound() : Ok(anime);
-    }
+        // Buscar todos ou filtrado
+        [HttpGet]
+        public async Task<IActionResult> GetFiltered([FromQuery] Guid? id, [FromQuery] string? nome, [FromQuery] string? diretor)
+        {
+            _logger.LogInformation("Iniciando busca de animes com filtros Id={Id}, Nome={Nome}, Diretor={Diretor}", id, nome, diretor);
+            try
+            {
+                var result = await _mediator.Send(new GetAnimeByFilterQuery(id, nome, diretor));
+                if (!result.Any())
+                    return NotFound("Nenhum anime encontrado.");
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] AnimeRequest request)
-    {
-        var id = await _animeService.CreateAsync(request);
-        return CreatedAtAction(nameof(GetById), new { id }, null);
-    }
+                _logger.LogInformation("Retornando {Count} animes encontrados", result.Count());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao filtrar animes.");
+                return StatusCode(500, "Erro interno no servidor.");
+            }
+        }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] AnimeRequest request)
-    {
-        var success = await _animeService.UpdateAsync(id, request);
-        return success ? NoContent() : NotFound();
-    }
+        // Buscar por ID diretamente
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            _logger.LogInformation("Buscando anime por ID: {Id}", id);
+            try
+            {
+                var result = await _mediator.Send(new GetAnimeByIdQuery(id));
+                if (result == null)
+                    return NotFound("Anime não encontrado.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao buscar anime por ID: {Id}", id);
+                return StatusCode(500, "Erro interno no servidor.");
+            }
+        }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        var success = await _animeService.DeleteAsync(id);
-        return success ? NoContent() : NotFound();
+        // Criar novo anime
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] AnimeRequest request)
+        {
+            _logger.LogInformation("Iniciando criação de anime.");
+            try
+            {
+                var result = await _mediator.Send(new CreateAnimeCommand(request.Nome, request.Diretor, request.Resumo));
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao criar anime.");
+                return StatusCode(500, "Erro interno no servidor.");
+            }
+        }
+
+        // Atualizar anime
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] AnimeRequest request)
+        {
+            _logger.LogInformation("Atualizando anime ID: {Id}", id);
+            try
+            {
+                var result = await _mediator.Send(new UpdateAnimeCommand(id, request.Nome, request.Diretor, request.Resumo));
+                if (result == null)
+                    return NotFound("Anime não encontrado.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar anime ID: {Id}", id);
+                return StatusCode(500, "Erro interno no servidor.");
+            }
+        }
+
+        // Excluir anime
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            _logger.LogInformation("Excluindo anime ID: {Id}", id);
+            try
+            {
+                var result = await _mediator.Send(new DeleteAnimeCommand(id));
+                if (!result)
+                    return NotFound("Anime não encontrado.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao excluir anime ID: {Id}", id);
+                return StatusCode(500, "Erro interno no servidor.");
+            }
+        }
     }
 }
