@@ -18,8 +18,8 @@ Projeto em ASP.NET 9 + MySQL para gerenciamento de animes. Esta aplicação exp�
 ### 1. Faça o fork e clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/AnimeApp.git
-cd AnimeApp
+git clone https://github.com/leticiacavalcaanti/anime-api
+cd anime-api
 ```
 
 ### 2. Configure o ambiente
