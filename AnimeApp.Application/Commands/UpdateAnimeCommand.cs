@@ -7,19 +7,19 @@ using MediatR;
 
 namespace AnimeApp.Application.Commands;
 
-public record UpdateAnimeCommand(Guid Id, string Nome, string Diretor, string Resumo) : IRequest<AnimeDTO?>;
+public record UpdateAnimeCommand(Guid Id, string? Nome, string? Diretor, string? Resumo) : IRequest<AnimeResponse?>;
 
-public class UpdateAnimeCommandHandler(IAnimeRepository repository, IMapper mapper) : IRequestHandler<UpdateAnimeCommand, AnimeDTO?>
+public class UpdateAnimeCommandHandler(IAnimeRepository repository, IMapper mapper) : IRequestHandler<UpdateAnimeCommand, AnimeResponse?>
 {
-    public async Task<AnimeDTO?> Handle(UpdateAnimeCommand request, CancellationToken cancellationToken)
+    public async Task<AnimeResponse?> Handle(UpdateAnimeCommand request, CancellationToken cancellationToken)
     {
         var anime = await repository.GetByIdAsync(request.Id) ?? throw new AnimeNotFoundException(request.Id);
 
-        anime.Nome = request.Nome;
-        anime.Diretor = request.Diretor;
-        anime.Resumo = request.Resumo;
+        anime.Nome = request.Nome ?? anime.Nome;
+        anime.Diretor = request.Diretor ?? anime.Diretor;
+        anime.Resumo = request.Resumo ?? anime.Resumo;
 
         await repository.UpdateAsync(anime);
-        return mapper.Map<AnimeDTO>(anime);
+        return mapper.Map<AnimeResponse>(anime);
     }
 }

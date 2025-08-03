@@ -6,11 +6,11 @@ using MediatR;
 
 namespace AnimeApp.Application.Commands;
 
-public record CreateAnimeCommand(string Nome, string Diretor, string Resumo) : IRequest<AnimeDTO>;
+public record CreateAnimeCommand(string Nome, string Diretor, string Resumo) : IRequest<AnimeResponse>;
 
-public class CreateAnimeCommandHandler(IAnimeRepository repository, IMapper mapper) : IRequestHandler<CreateAnimeCommand, AnimeDTO>
+public class CreateAnimeCommandHandler(IAnimeRepository repository, IMapper mapper) : IRequestHandler<CreateAnimeCommand, AnimeResponse>
 {
-    public async Task<AnimeDTO> Handle(CreateAnimeCommand request, CancellationToken cancellationToken)
+    public async Task<AnimeResponse> Handle(CreateAnimeCommand request, CancellationToken cancellationToken)
     {
         var anime = new Anime
         {
@@ -21,6 +21,6 @@ public class CreateAnimeCommandHandler(IAnimeRepository repository, IMapper mapp
         };
 
         await repository.AddAsync(anime);
-        return mapper.Map<AnimeDTO>(anime);
+        return mapper.Map<AnimeResponse>(anime);
     }
 }
