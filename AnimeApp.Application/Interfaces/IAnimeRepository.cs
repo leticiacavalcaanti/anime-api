@@ -11,9 +11,9 @@ public interface IAnimeRepository
 {
     Task<IEnumerable<Anime>> GetAllAsync();
     Task<Anime?> GetByIdAsync(Guid id);
-    Task<IEnumerable<Anime>> GetByFilterAsync(string? nome, string? diretor);
-    Task AddAsync(Anime anime);
-    Task UpdateAsync(Anime anime);
+    Task<IEnumerable<Anime>> GetByFilterAsync(Guid? id, string? nome, string? diretor);
+    Task <Anime> AddAsync(Anime anime);
+    Task <Anime> UpdateAsync(Anime anime);
     Task DeleteAsync(Anime anime);
 }
 
