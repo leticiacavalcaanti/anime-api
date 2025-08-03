@@ -9,10 +9,30 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: AnimeDb
     ports:
-      - "3001:3306"  # "3001:3306"
+      - "3001:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - animeapp_mysql_data:/var/lib/mysql
+    networks:
+      - anime-net
+
+  anime-api:
+    build:
+      context: .
+      dockerfile: AnimeApp.API/Dockerfile
+    depends_on:
+      - mysql
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=AnimeDb;User=root;Password=root;
+    networks:
+      - anime-net
 
 volumes:
-  mysql_data:
+  animeapp_mysql_data:
+    external: true
 
+networks:
+  anime-net:
+    driver: bridge
