@@ -20,7 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     )
 );
 
-// Repositórios
+// Repositï¿½rios
 builder.Services.AddScoped<IAnimeRepository, AnimeRepository>();
 
 // AutoMapper
@@ -72,7 +72,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// Middleware global de exceções
+// Middleware global de exceï¿½ï¿½es
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseCors("AllowAll");
@@ -82,5 +82,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Aplicar as migrations automaticamente no startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
