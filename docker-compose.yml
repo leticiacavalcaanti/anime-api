@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   mysql:
@@ -10,28 +10,30 @@ services:
       MYSQL_DATABASE: AnimeDb
     ports:
       - "3001:3306"
-    volumes:
-      - animeapp_mysql_data:/var/lib/mysql
     networks:
       - anime-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
 
   anime-api:
     build:
       context: .
       dockerfile: AnimeApp.API/Dockerfile
-    depends_on:
-      - mysql
+    container_name: anime-api
     ports:
       - "5000:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=AnimeDb;User=root;Password=root;
+    depends_on:
+      mysql:
+        condition: service_healthy
     networks:
       - anime-net
-
-volumes:
-  animeapp_mysql_data:
-    external: true
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=AnimeDb;User=root;Password=root;
 
 networks:
   anime-net:
