@@ -48,6 +48,7 @@ AnimeApp/
 ├── AnimeApp.Application/      # Camada de aplicação (DTOs, comandos)
 ├── AnimeApp.Domain/           # Entidades e exceções do domínio
 ├── AnimeApp.Infra/            # Repositórios e contexto EF Core
+├── AnimeApp.Test              # Testes da Aplicação
 ├── docker-compose.yml         # Orquestração dos serviços Docker
 
 ```
@@ -65,7 +66,7 @@ ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=AnimeDb;Use
 ```
 
 ## 🧪 Testes
-Os testes unitários estão localizados no projeto de testes
+Os testes unitários estão localizados no projeto de testes ```AnimeApp.Test``` 
 Execute via terminal:
 ```bash
 dotnet test
