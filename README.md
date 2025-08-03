@@ -48,7 +48,7 @@ AnimeApp/
 ├── AnimeApp.Application/      # Camada de aplicação (DTOs, comandos)
 ├── AnimeApp.Domain/           # Entidades e exceções do domínio
 ├── AnimeApp.Infra/            # Repositórios e contexto EF Core
-├── AnimeApp.Test              # Testes da Aplicação
+├── AnimeApp.Tests              # Testes da Aplicação
 ├── docker-compose.yml         # Orquestração dos serviços Docker
 
 ```
