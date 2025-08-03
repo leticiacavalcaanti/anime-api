@@ -5,7 +5,8 @@ Projeto em ASP.NET 9 + MySQL para gerenciamento de animes. Esta aplicação exp�
 ## 🧬 Tecnologias
 
 - ASP.NET Core 9
-- Entity Framework Core (MySQL)
+- Entity Framework Core
+- SQL Server (via Docker)
 - MediatR
 - AutoMapper
 - Serilog
@@ -35,6 +36,12 @@ Esse comando irá:
 - Subir um container com MySQL na porta 3001
 - Criar o banco AnimeDb com usuário root e senha root
 
+- Construir a imagem da API usando o .NET SDK 9.0
+- Subir um container com a API na porta 5000
+- Subir um container com SQL Server na porta 1433
+- Criar o banco AnimeDb com o usuário sa e a senha Your_password123
+- Aguardar o banco estar pronto antes de iniciar a API (via healthcheck)
+
 ### 4. Acesse a documentação da API
 Depois que os containers estiverem no ar, acesse: http://localhost:5000/swagger
 Você verá a documentação interativa (Swagger UI) com todas as rotas disponíveis.
@@ -52,16 +59,10 @@ AnimeApp/
 
 ```
 
-## 🔒 Connection String (Docker vs Local)
-- Em produção ou Docker Compose: já configurado via docker-compose.yml:
-ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=AnimeDb;User=root;Password=root;
-- Para desenvolvimento local (sem Docker Compose) atualize o appsettings.Development.json:
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Port=3001;Database=AnimeDb;User=root;Password=root;"
-  }
-}
+## 🔒 Connection String
+- A string de conexão está definida no docker-compose.yml com:
+```
+ConnectionStrings__DefaultConnection: Server=sqlserver;Database=AnimeDb;User Id=sa;Password=Your_password123;
 ```
 
 ## 🧪 Testes
