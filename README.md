@@ -1,6 +1,6 @@
 # AnimeApp 🎬
 
-Projeto em ASP.NET 9 + MySQL para gerenciamento de animes. Esta aplicação expõe uma Web API RESTful com suporte a Docker e Swagger.
+Projeto em ASP.NET 9 + SQL Server para gerenciamento de animes. Esta aplicação expõe uma Web API RESTful com suporte a Docker e Swagger.
 
 ## 🧬 Tecnologias
 
