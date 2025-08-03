@@ -33,11 +33,6 @@ docker-compose up --build -d
 Esse comando irá:
 - Construir a imagem da API usando o .NET SDK 9.0
 - Subir um container com a API na porta 5000
-- Subir um container com MySQL na porta 3001
-- Criar o banco AnimeDb com usuário root e senha root
-
-- Construir a imagem da API usando o .NET SDK 9.0
-- Subir um container com a API na porta 5000
 - Subir um container com SQL Server na porta 1433
 - Criar o banco AnimeDb com o usuário sa e a senha Your_password123
 - Aguardar o banco estar pronto antes de iniciar a API (via healthcheck)
